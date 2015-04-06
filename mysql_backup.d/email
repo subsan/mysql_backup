@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# mail
+MAIL="mail@address"
+SUBJECT="subject"
+BODY="body"
+
+# bins
+mail="$(which mail)"
+
+# params
+DUMPDIR=$1
+PREFIX=$2
+DUMPFILE=$3
+
+echo $BODY|mail -A $DUMPDIR/$PREFIX-$DUMPFILE -s "$SUBJECT" $MAIL

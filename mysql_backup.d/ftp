@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# ftp access
+FTPD="/"
+FTPU="user"
+FTPP="pass"
+FTPS="ftp.my.site.com"
+
+# bins
+FTP="$(which ftp)"
+
+# params
+DUMPDIR=$1
+PREFIX=$2
+DUMPFILE=$3
+
+cd $DUMPDIR
+
+# to ftp
+$FTP -p -n $FTPS<<END_SCRIPT
+quote USER $FTPU
+quote PASS $FTPP
+cd $FTPD
+put $PREFIX-$DUMPFILE
+quit
+END_SCRIPT
+
+# @TODO add script to remove old backup files

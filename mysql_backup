@@ -1,0 +1,59 @@
+#!/bin/sh
+
+# @TODO write a humanoid comments
+
+# prefix of archive file
+PREFIX="mysql"
+
+# backup DIR
+BACKUPDIR="/usr/local/sbin/mysql_backup/backup"
+
+# mysql access
+MYSQLUSER="root"
+MYSQLPASS=""
+MYSQLHOST="localhost"
+# databases
+# comment this string for backup all databases
+#DATABASES="test"
+
+# bins
+MYSQL="$(which mysql)"
+MYSQLDUMP="$(which mysqldump)"
+TAR="$(which tar)"
+GZIP="$(which gzip)"
+DATE="$(which date)"
+MKDIR="$(which mkdir)"
+RM="$(which rm)"
+RUNPARTS="$(which run-parts)"
+
+DIRROOT=$(cd $(dirname $0) && pwd)
+
+# date
+NOW=$($DATE +%Y%m%d)
+
+# create dir
+$MKDIR $BACKUPDIR/$NOW
+
+# mysql tables
+if [ -z ${DATABASES+x} ];then
+    DATABASES="$($MYSQL -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS -Bse 'show databases')";
+fi
+# @TODO remove information_schema and performance_schema from list DATABASES
+
+for db in $DATABASES
+do
+    $MKDIR $BACKUPDIR/$NOW/$db
+    FILE=$BACKUPDIR/$NOW/$db/$db.sql.gz
+    echo $i; $MYSQLDUMP --skip-opt --add-drop-table --allow-keywords -q -c -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS $db $i | $GZIP -9 > $FILE
+done
+
+ARCHIVE=$BACKUPDIR/$PREFIX-$NOW.tar.gz
+
+$TAR -zcf $ARCHIVE $BACKUPDIR/$NOW
+
+#clean
+$RM -rf $BACKUPDIR/$NOW
+
+# @TODO add script to remove old backup files
+
+$RUNPARTS --report --arg=$BACKUPDIR --arg=$PREFIX --arg=$NOW.tar.gz ${DIRROOT}/mysql_backup.d

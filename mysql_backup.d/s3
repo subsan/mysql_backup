@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# s3
+S3BUCKET="my_backet"
+S3PATH="mysql/backup/dir"
+
+# bins
+S3CMD="$(which s3cmd)"
+
+# params
+DUMPDIR=$1
+PREFIX=$2
+DUMPFILE=$3
+
+$S3CMD put -f $DUMPDIR/$PREFIX-$DUMPFILE s3://$S3BUCKET/$S3PATH/
+
+# @TODO add script to remove old backup files
