@@ -16,6 +16,8 @@ MYSQLHOST="localhost"
 # comment this string for backup all databases
 #DATABASES="test"
 
+IGNORE_DATABASES="information_schema performance_schema"
+
 # bins
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
@@ -25,6 +27,8 @@ DATE="$(which date)"
 MKDIR="$(which mkdir)"
 RM="$(which rm)"
 RUNPARTS="$(which run-parts)"
+ECHO="$(which echo)"
+SED="$(which sed)"
 
 DIRROOT=$(cd $(dirname $0) && pwd)
 
@@ -38,7 +42,12 @@ $MKDIR $BACKUPDIR/$NOW
 if [ -z ${DATABASES+x} ];then
     DATABASES="$($MYSQL -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS -Bse 'show databases')";
 fi
-# @TODO remove information_schema and performance_schema from list DATABASES
+
+# remove ignoring databases
+for db in $IGNORE_DATABASES
+do
+    DATABASES=$($ECHO "$DATABASES" | $SED -r "s/($db)//g")
+done
 
 for db in $DATABASES
 do
