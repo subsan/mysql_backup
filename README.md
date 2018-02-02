@@ -3,21 +3,33 @@ MySQL_backup
 
 Light script for backup your MySQL databases.
 
-## Installation
+# Installation
 1. Download script
 2. Set permissions
 3. Configure database parameters
 4. Configure backup scripts
 5. Set up cron job
 
-## Install
+###Install requirements
 
+Ubuntu:
+```
+apt install tnftp
+```
+
+###Download script
 Download script "mysql_backup" and "mysql_backup.d" folder (for example, in /usr/local/sbin/mysql_backup/)
 Create local folder for save backup files (for example, /usr/local/sbin/mysql_backup/backup/)
 
-## Configuration
+or
 
-### MySQL Settings
+```
+git clone git@github.com:subsan/mysql_backup.git
+```
+
+# Configuration
+
+## MySQL Settings
 
 Database, backup filename prefix and system dir settings in mysql_backup file:
 ```
@@ -34,7 +46,7 @@ MYSQLHOST="localhost"
 #DATABASES="test"
 ```
 
-### Backup scripts configure
+## Backup scripts configure
 
 This script is able to send backups to different services (FTP, mail, Amazon c3).
 For each service, there is an executive configuration file in the folder mysql_backup.d
