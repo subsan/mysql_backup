@@ -10,14 +10,14 @@ Light script for backup your MySQL databases.
 4. Configure backup scripts
 5. Set up cron job
 
-###Install requirements
+## Install requirements
 
 Ubuntu:
 ```
 apt install tnftp
 ```
 
-###Download script
+## Download script
 Download script "mysql_backup" and "mysql_backup.d" folder (for example, in /usr/local/sbin/mysql_backup/)
 Create local folder for save backup files (for example, /usr/local/sbin/mysql_backup/backup/)
 
