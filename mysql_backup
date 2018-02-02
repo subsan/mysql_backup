@@ -16,11 +16,15 @@ MYSQLHOST="localhost"
 # comment this string for backup all databases
 #DATABASES="test"
 
+# if you backup from replica you need to stop replication
+STOP_REPLICATION=false
+
 IGNORE_DATABASES="information_schema performance_schema"
 
 # bins
 MYSQL="$(which mysql)"
 MYSQLDUMP="$(which mysqldump)"
+MYSQLADMIN="$(which mysqladmin)"
 TAR="$(which tar)"
 GZIP="$(which gzip)"
 DATE="$(which date)"
@@ -49,12 +53,20 @@ do
     DATABASES=$($ECHO "$DATABASES" | $SED -r "s/($db)//g")
 done
 
+if [ "$STOP_REPLICATION" = true ] ; then
+    $MYSQLADMIN -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS stop-slave
+fi
+
 for db in $DATABASES
 do
     $MKDIR $BACKUPDIR/$NOW/$db
     FILE=$BACKUPDIR/$NOW/$db/$db.sql
     echo $i; $MYSQLDUMP --add-drop-table --allow-keywords -q -c -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS $db $i > $FILE
 done
+
+if [ "$STOP_REPLICATION" = true ] ; then
+    $MYSQLADMIN -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS start-slave
+fi
 
 ARCHIVE=$BACKUPDIR/$PREFIX-$NOW.tar.gz
 
