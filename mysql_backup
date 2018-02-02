@@ -52,8 +52,8 @@ done
 for db in $DATABASES
 do
     $MKDIR $BACKUPDIR/$NOW/$db
-    FILE=$BACKUPDIR/$NOW/$db/$db.sql.gz
-    echo $i; $MYSQLDUMP --add-drop-table --allow-keywords -q -c -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS $db $i | $GZIP -9 > $FILE
+    FILE=$BACKUPDIR/$NOW/$db/$db.sql
+    echo $i; $MYSQLDUMP --add-drop-table --allow-keywords -q -c -u $MYSQLUSER -h $MYSQLHOST -p$MYSQLPASS $db $i > $FILE
 done
 
 ARCHIVE=$BACKUPDIR/$PREFIX-$NOW.tar.gz
